@@ -1123,7 +1123,20 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 
 </footer></div>
 
-<style>html { scroll-behavior: smooth; } .section-anchor { scroll-margin-top: 110px; }</style>
+<style>html { scroll-behavior: smooth; } :root { --header-h: 110px; } .section-anchor { scroll-margin-top: calc(var(--header-h) + 24px); }</style>
+<script>
+(function() {
+  var header = document.querySelector('header.wp-block-template-part');
+  function setHeaderHeight() {
+    if (header) {
+      document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+    }
+  }
+  setHeaderHeight();
+  window.addEventListener('resize', setHeaderHeight);
+  window.addEventListener('load', setHeaderHeight);
+})();
+</script>
 
 </body>
 </html>
