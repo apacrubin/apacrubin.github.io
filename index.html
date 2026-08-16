@@ -9,10 +9,6 @@
 <link rel="icon" href="wp-content/uploads/2026/08/rubin-favicon-300x300.png" sizes="192x192" />
 <link rel="apple-touch-icon" href="wp-content/uploads/2026/08/rubin-favicon-300x300.png" />
 <meta name="msapplication-TileImage" content="wp-content/uploads/2026/08/rubin-favicon-300x300.png" />
-<script id="wp-importmap" type="importmap">
-{"imports":{"@wordpress/interactivity":"wp-includes/js/dist/script-modules/interactivity/index.min.js"}}
-</script>
-<link rel="modulepreload" href="wp-includes/js/dist/script-modules/interactivity/index.min.js" id="@wordpress/interactivity-js-modulepreload" fetchpriority="low">
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -1148,7 +1144,41 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
   window.addEventListener('load', setHeaderHeight);
 })();
 </script>
-<script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low" id="@wordpress/block-library/navigation/view-js-module" src="wp-includes/js/dist/script-modules/block-library/navigation/view.min.js" type="module"></script>
+<script>
+(function() {
+  // Plain vanilla-JS mobile menu toggle. WordPress's own navigation block relies
+  // on the Interactivity API (import maps + a module script), which silently
+  // does nothing on browsers without import-map support (e.g. iOS Safari before
+  // 16.4) and is generally fragile in a static export. This has no dependencies
+  // and works everywhere, using the same is-menu-open / has-modal-open classes
+  // the block's own CSS already knows how to style.
+  var openBtn = document.querySelector('.wp-block-navigation__responsive-container-open');
+  var closeBtn = document.querySelector('.wp-block-navigation__responsive-container-close');
+  var container = document.querySelector('.wp-block-navigation__responsive-container');
+  if (!openBtn || !closeBtn || !container) return;
+
+  function openMenu() {
+    container.classList.add('is-menu-open', 'has-modal-open');
+    container.removeAttribute('tabindex');
+    openBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    container.classList.remove('is-menu-open', 'has-modal-open');
+    openBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  container.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+  container.querySelectorAll('.wp-block-navigation-item__content').forEach(function(link) {
+    link.addEventListener('click', closeMenu);
+  });
+})();
+</script>
 
 </body>
 </html>
