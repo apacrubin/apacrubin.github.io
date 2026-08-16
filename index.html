@@ -1130,7 +1130,12 @@ ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:
 
 </footer></div>
 
-<style>html { scroll-behavior: smooth; } :root { --header-h: 110px; } .section-anchor { scroll-margin-top: calc(var(--header-h) + 24px); }</style>
+<style>html { scroll-behavior: smooth; } :root { --header-h: 110px; } .section-anchor { scroll-margin-top: calc(var(--header-h) + 24px); }
+/* Force organizer photos to a hard square regardless of container width or
+   loading state, so is-style-rounded's border-radius always renders a true
+   circle instead of an oval on some mobile browsers during flex reflow. */
+.wp-block-image.is-style-rounded img { aspect-ratio: 1 / 1; object-fit: cover; width: 100%; height: 100%; }
+</style>
 <script>
 (function() {
   var header = document.querySelector('header.wp-block-template-part');
